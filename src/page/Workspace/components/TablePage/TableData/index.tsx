@@ -31,6 +31,7 @@ import { SettingStore } from '@/store/setting';
 import type { SQLStore } from '@/store/sql';
 import { formatMessage } from '@/util/intl';
 import notification from '@/util/notification';
+import { openDMSExportWorkflow } from '@/util/dms/export';
 import { isDocumentOrKeyValueSession } from '@/util/mongodb';
 import { generateSelectSql } from '@/util/sql';
 import { generateUniqKey } from '@/util/utils';
@@ -391,12 +392,11 @@ class TableData extends React.Component<
   };
 
   showExportResuleSetModal = () => {
-    const { modalStore, session, tableName } = this.props;
-    const sql = generateSelectSql(false, session.connection?.type, tableName);
-    modalStore.changeCreateResultSetExportTaskModal(true, {
-      sql,
-      databaseId: session?.database.databaseId,
-      tableName
+    const { session, tableName } = this.props;
+    openDMSExportWorkflow({
+      dataSourceName: session.odcDatabase?.dataSource?.name,
+      schemaName: session.database?.dbName,
+      sql: generateSelectSql(false, session.connection?.type, tableName)
     });
   };
 

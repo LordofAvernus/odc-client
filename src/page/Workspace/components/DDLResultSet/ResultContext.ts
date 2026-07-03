@@ -16,6 +16,7 @@
 
 import { ResultSetColumn } from '@/d.ts';
 import SessionStore from '@/store/sessionManager/session';
+import type { DataGridRef } from '@oceanbase-odc/ob-react-data-grid';
 import React from 'react';
 
 const ResultContext = React.createContext<{
@@ -26,6 +27,7 @@ const ResultContext = React.createContext<{
   sessionId: string;
   isEditing: boolean;
   session?: SessionStore;
+  gridRef?: React.MutableRefObject<DataGridRef>;
   /**
    * 是否为列模式
    */

@@ -32,6 +32,7 @@ import type {
 } from '@oceanbase-odc/ob-react-data-grid';
 import type { RowType } from '../EditableTable';
 import EditableTable from '../EditableTable';
+import ResultSetContextMenu from './ResultSetContextMenu';
 import TextFormatter from './hooks/components/TextFormatter';
 import { getCellFormatter } from './hooks/useColumns';
 import styles from './index.less';
@@ -190,6 +191,7 @@ const ColumnModeModal: React.FC<IProps> = function (props) {
           enableRowRecord={false}
           readonly={true}
           onCopy={handleForbidCopy}
+          contextMenuRender={ResultSetContextMenu}
         />
       </ResultContext.Provider>
 

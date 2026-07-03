@@ -29,8 +29,10 @@ import type { PageStore } from '@/store/page';
 import { SessionManagerStore } from '@/store/sessionManager';
 import SessionStore from '@/store/sessionManager/session';
 import type { SQLStore } from '@/store/sql';
+import { openDMSExportWorkflow } from '@/util/dms/export';
 import { formatMessage } from '@/util/intl';
 import notification from '@/util/notification';
+import { generateSelectSql } from '@/util/sql';
 import { downloadPLDDL } from '@/util/sqlExport';
 import { generateUniqKey } from '@/util/utils';
 import { AlignLeftOutlined, CloudDownloadOutlined } from '@ant-design/icons';
@@ -367,13 +369,15 @@ class ViewPage extends Component<
   };
 
   showExportResuleSetModal = () => {
-    const { modalStore, session, params } = this.props;
+    const { session, params } = this.props;
     const { resultSet } = this.state;
-    const sql = resultSet?.originSql;
-    modalStore.changeCreateResultSetExportTaskModal(true, {
-      sql,
-      databaseId: session?.database.databaseId,
-      tableName: params?.viewName
+    const viewName = params?.viewName;
+    openDMSExportWorkflow({
+      dataSourceName: session.odcDatabase?.dataSource?.name,
+      schemaName: session.database?.dbName,
+      sql:
+        resultSet?.originSql ||
+        generateSelectSql(false, session.connection?.type, viewName)
     });
   };
 
