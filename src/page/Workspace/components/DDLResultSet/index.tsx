@@ -37,6 +37,7 @@ import { ReactComponent as SubmitSvg } from '@/svgr/Submit.svg';
 import { ReactComponent as TraceSvg } from '@/svgr/Trace.svg';
 
 import { getDataSourceModeConfig } from '@/common/datasource';
+import { isDMSWorkbench, openDMSExportFromResultSet } from '@/util/dms/export';
 import { uploadTableObject } from '@/common/network/sql';
 import {
   downloadDataObject,
@@ -102,6 +103,7 @@ import ColumnModeModal from './ColumnModeModal';
 import useColumns, { isNumberType } from './hooks/useColumns';
 import styles from './index.less';
 import ResultContext from './ResultContext';
+import ResultSetContextMenu from './ResultSetContextMenu';
 import StatusBar from './StatusBar';
 import Sync from './Sync';
 import {
@@ -442,8 +444,18 @@ const DDLResultSet: React.FC<IProps> = function (props) {
     gridRef.current?.scrollToRow(0);
   }, [gridRef]);
   const handleExport = useCallback(() => {
+    if (isDMSWorkbench()) {
+      openDMSExportFromResultSet({
+        dataSourceName: session.odcDatabase?.dataSource?.name,
+        schemaName: session.database?.dbName,
+        originSql,
+        connectionType: session.connection?.type,
+        tableName: table?.tableName
+      });
+      return;
+    }
     onExport?.(limit || 1000);
-  }, [onExport, limit]);
+  }, [onExport, limit, session, originSql, table?.tableName]);
   const handleEditPropertyInCell = useCallback(
     (newRows) => {
       setEditRows(newRows);
@@ -1391,7 +1403,8 @@ const DDLResultSet: React.FC<IProps> = function (props) {
             isEditing,
             downloadObjectData,
             getDonwloadUrl,
-            session
+            session,
+            gridRef
           }}
         >
           <EditableTable
@@ -1409,6 +1422,7 @@ const DDLResultSet: React.FC<IProps> = function (props) {
             onRowsChange={handleEditPropertyInCell}
             onSelectChange={onSelectedChange}
             getContextMenuConfig={getContextMenuConfig}
+            contextMenuRender={ResultSetContextMenu}
             enableFrozenRow={true}
             pasteFormatter={pasteFormatter}
             onCopy={handleForbidCopy}

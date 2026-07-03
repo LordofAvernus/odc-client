@@ -1,6 +1,11 @@
 import { ROUTE_PATHS, TRANSIT_FROM_CONSTANT } from '@actiontech/dms-kit';
 import dayjs from 'dayjs';
 import LZString from 'lz-string';
+import { ConnectType } from '@/d.ts';
+import { getDatabase } from '@/common/network/database';
+import sessionManager from '@/store/sessionManager';
+import { generateSelectSql } from '@/util/sql';
+import { getDMSProjectNameByDatasourceName } from '@/util/dms/project';
 
 type Params = {
   sql?: string;
@@ -108,5 +113,117 @@ export const generateDMSExportUrl = (params: Params): string => {
   } catch {
     const fallbackUrl = new URL(baseUrl, window.location.origin);
     return fallbackUrl.toString();
+  }
+};
+
+export const isDMSWorkbench = (): boolean => {
+  if ((window.ODCApiHost || '').includes('odc_query')) {
+    return true;
+  }
+  return window.location.pathname.includes('/odc_query');
+};
+
+export const openDMSExportFromResultSet = (context: {
+  dataSourceName?: string;
+  schemaName?: string;
+  originSql?: string;
+  connectionType?: ConnectType;
+  tableName?: string;
+}) => {
+  const { dataSourceName, schemaName, originSql, connectionType, tableName } =
+    context;
+  openDMSExportWorkflow({
+    dataSourceName,
+    schemaName,
+    sql:
+      originSql ||
+      (tableName && connectionType
+        ? generateSelectSql(false, connectionType, tableName)
+        : undefined)
+  });
+};
+
+export const openDMSUrl = (url: string) => {
+  const targetWindow = window.top ?? window;
+  const newWindow = targetWindow.open(url, '_blank', 'noopener,noreferrer');
+  if (!newWindow) {
+    targetWindow.location.href = url;
+  }
+};
+
+export const openDMSExportWorkflow = (params: {
+  dataSourceName: string;
+  schemaName?: string;
+  sql?: string;
+  desc?: string;
+}) => {
+  const { dataSourceName, schemaName, sql, desc } = params;
+  const url = generateDMSExportUrl({
+    sql,
+    instanceName: dataSourceName,
+    schemaName,
+    desc,
+    projectName: getDMSProjectNameByDatasourceName(dataSourceName)
+  });
+  openDMSUrl(url);
+};
+
+export const redirectResultSetExportToDMS = async (data: {
+  sql?: string;
+  databaseId?: number;
+  tableName?: string;
+}) => {
+  const { sql, databaseId, tableName } = data;
+
+  for (const session of sessionManager.sessionMap.values()) {
+    if (
+      databaseId &&
+      (session.database?.databaseId === databaseId ||
+        session.odcDatabase?.id === databaseId)
+    ) {
+      openDMSExportWorkflow({
+        dataSourceName: session.odcDatabase?.dataSource?.name,
+        schemaName: session.database?.dbName,
+        sql:
+          sql ||
+          (tableName
+            ? generateSelectSql(false, session.connection?.type, tableName)
+            : undefined)
+      });
+      return;
+    }
+  }
+
+  const cachedDatabase = databaseId
+    ? sessionManager.database.get(databaseId)
+    : undefined;
+  if (cachedDatabase) {
+    openDMSExportWorkflow({
+      dataSourceName: cachedDatabase.dataSource?.name,
+      schemaName: cachedDatabase.name,
+      sql
+    });
+    return;
+  }
+
+  if (databaseId) {
+    const res = await getDatabase(databaseId, true);
+    const database = res?.data;
+    if (database) {
+      openDMSExportWorkflow({
+        dataSourceName: database.dataSource?.name,
+        schemaName: database.name,
+        sql
+      });
+      return;
+    }
+  }
+
+  if (sql) {
+    const url = generateDMSExportUrl({
+      sql,
+      projectName: 'default'
+    });
+    openDMSUrl(url);
   }
 };

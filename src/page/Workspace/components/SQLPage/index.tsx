@@ -56,6 +56,7 @@ import sessionManager, { SessionManagerStore } from '@/store/sessionManager';
 import SessionStore from '@/store/sessionManager/session';
 import setting, { SettingStore } from '@/store/setting';
 import type { SQLStore } from '@/store/sql';
+import { openDMSExportWorkflow } from '@/util/dms/export';
 import { isConnectionModeBeMySQLType } from '@/util/connection';
 import { isLogicalDatabase } from '@/util/database';
 import utils, { EHighLight } from '@/util/editor';
@@ -1296,17 +1297,16 @@ export class SQLPage extends Component<IProps, ISQLPageState> {
 
   showExportResuleSetModal = (tableName: string) => {
     const {
-      modalStore,
       pageKey,
       sqlStore: { resultSets }
     } = this.props;
     const { resultSetIndexToExport } = this.state;
     const session = this.getSession();
-    const sql = resultSets.get(pageKey)?.[resultSetIndexToExport]?.originSql;
-    modalStore.changeCreateResultSetExportTaskModal(true, {
-      sql,
-      databaseId: session?.database.databaseId,
-      tableName
+    const resultSet = resultSets.get(pageKey)?.[resultSetIndexToExport];
+    openDMSExportWorkflow({
+      dataSourceName: session.odcDatabase?.dataSource?.name,
+      schemaName: resultSet?.resultSetMetaData?.table?.databaseName,
+      sql: resultSet?.originSql
     });
   };
 

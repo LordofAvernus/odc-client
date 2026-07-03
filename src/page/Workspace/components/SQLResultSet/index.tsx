@@ -65,8 +65,7 @@ import {
   ResponseCode
 } from '@actiontech/dms-kit';
 import { getMoreResults } from '@/common/network/sql/executeSQL';
-import { generateDMSExportUrl } from '@/util/dms/export';
-import { getDMSProjectNameByDatasourceName } from '../../../../util/dms/project';
+import { openDMSExportWorkflow } from '@/util/dms/export';
 
 export const recordsTabKey = 'records';
 export const sqlLintTabKey = 'sqlLint';
@@ -777,16 +776,12 @@ const SQLResultSet: React.FC<IProps> = function (props) {
                       traceId={set.traceId}
                       onExport={() => {
                         if (set.allowExport) {
-                          const url = generateDMSExportUrl({
-                            sql: set.originSql,
-                            instanceName: session.odcDatabase.dataSource.name,
+                          openDMSExportWorkflow({
+                            dataSourceName: session.odcDatabase.dataSource.name,
                             schemaName:
                               set.resultSetMetaData?.table?.databaseName,
-                            projectName: getDMSProjectNameByDatasourceName(
-                              session.odcDatabase.dataSource.name
-                            )
+                            sql: set.originSql
                           });
-                          window.open(url);
                         }
                       }}
                       onShowExecuteDetail={() =>

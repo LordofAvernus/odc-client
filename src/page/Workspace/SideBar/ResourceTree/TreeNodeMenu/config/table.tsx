@@ -50,8 +50,9 @@ import { IMenuItemConfig } from '../type';
 import { isSupportExport } from './helper';
 import { isLogicalDatabase } from '@/util/database';
 import { DatabasePermissionType } from '@/d.ts/database';
-import { generateDMSExportUrl } from '@/util/dms/export';
+import { openDMSExportWorkflow } from '@/util/dms/export';
 import { isDocumentOrKeyValueSession } from '@/util/mongodb';
+import { generateSelectSql } from '@/util/sql';
 
 export const tableMenusConfig: Partial<
   Record<ResourceNodeType, IMenuItemConfig[]>
@@ -216,18 +217,12 @@ export const tableMenusConfig: Partial<
       },
       run(session, node) {
         const table = node.data as ITableModel;
-        // modalStore.changeExportModal(true, {
-        //   type: DbObjectType.table,
-        //   name: table?.info?.tableName,
-        //   databaseId: session?.database.databaseId
-        // });
-        const url = generateDMSExportUrl({
-          instanceName: session.odcDatabase.dataSource.name,
+        const tableName = table?.info?.tableName;
+        openDMSExportWorkflow({
+          dataSourceName: session.odcDatabase.dataSource.name,
           schemaName: session.database.dbName,
-          // todo
-          projectName: 'default'
+          sql: generateSelectSql(false, session.connection?.type, tableName)
         });
-        window.open(url);
       }
     },
     {

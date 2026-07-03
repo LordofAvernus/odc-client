@@ -39,7 +39,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { message, Tooltip, Typography } from 'antd';
 import { ResourceNodeType } from '../../type';
 import { IMenuItemConfig } from '../type';
-import { generateDMSExportUrl } from '@/util/dms/export';
+import { openDMSExportWorkflow } from '@/util/dms/export';
 import { generateDMSSqlWorkflowUrl } from '@/util/dms/sqlWorkflow';
 
 const { Text } = Typography;
@@ -216,16 +216,10 @@ export const databaseMenusConfig: Partial<
           },
           run(session, node) {
             const database: IDatabase = node.data;
-            // modal.changeCreateResultSetExportTaskModal(true, {
-            //   databaseId: database?.id
-            // });
-            const url = generateDMSExportUrl({
-              instanceName: database.dataSource.name,
-              schemaName: database.name,
-              // todo
-              projectName: 'default'
+            openDMSExportWorkflow({
+              dataSourceName: database.dataSource.name,
+              schemaName: database.name
             });
-            window.open(url);
           }
         }
       ]

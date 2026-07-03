@@ -8,8 +8,10 @@ import { SessionManagerStore } from '@/store/sessionManager';
 import SessionStore from '@/store/sessionManager/session';
 import type { RadioChangeEvent } from 'antd/lib/radio';
 import type { SQLStore } from '@/store/sql';
+import { openDMSExportWorkflow } from '@/util/dms/export';
 import { formatMessage } from '@/util/intl';
 import notification from '@/util/notification';
+import { generateSelectSql } from '@/util/sql';
 import { Layout, message, Radio, Spin, Tabs } from 'antd';
 import { inject, observer } from 'mobx-react';
 import DDLResultSet from '../DDLResultSet';
@@ -156,11 +158,17 @@ const MaterializedViewPage = inject(
     }, [params.materializedViewName, session]);
 
     const showExportResuleSetModal = () => {
-      const sql = resultSet?.originSql;
-      modalStore.changeCreateResultSetExportTaskModal(true, {
-        sql,
-        databaseId: session?.database.databaseId,
-        tableName: params?.materializedViewName
+      const materializedViewName = params?.materializedViewName;
+      openDMSExportWorkflow({
+        dataSourceName: session.odcDatabase?.dataSource?.name,
+        schemaName: session.database?.dbName,
+        sql:
+          resultSet?.originSql ||
+          generateSelectSql(
+            false,
+            session.connection?.type,
+            materializedViewName
+          )
       });
     };
 

@@ -43,6 +43,11 @@ import setting from './setting';
 import { getSpaceConfigForFormInitialValue } from '@/util/utils';
 import { truncate } from 'lodash';
 import { DMSIframeModalProps } from '../component/DMSIframeModal';
+import {
+  generateDMSExportUrl,
+  openDMSUrl,
+  redirectResultSetExportToDMS
+} from '@/util/dms/export';
 
 interface ConnectionData {
   data: any;
@@ -617,6 +622,15 @@ export class ModalStore {
     isShow: boolean = true,
     data?: ResultSetExportData
   ) => {
+    if (isShow && !data?.taskId && !data?.task) {
+      if (data) {
+        void redirectResultSetExportToDMS(data);
+      } else {
+        const url = generateDMSExportUrl({ projectName: 'default' });
+        openDMSUrl(url);
+      }
+      return;
+    }
     getSpaceConfigForFormInitialValue(isShow, () => {
       this.createResultSetExportTaskVisible = isShow;
       this.resultSetExportData = isShow ? data : null;
