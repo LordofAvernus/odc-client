@@ -38,6 +38,18 @@ import { generateDatabaseSid, generateTableSid } from '../pathUtil';
 import { convertServerTableToTable, convertTableToServerTable } from './helper';
 import { getLogicalTableDetail } from '@/common/network/logicalDatabase';
 import odc from '@/plugins/odc';
+
+const SILENT_IDENTITY_ERROR_CODES = new Set([
+  'ConnectionOccupied',
+  'NetError',
+  'ServiceUnavailable',
+  'GatewayTimeout'
+]);
+
+function isSilentIdentityError(res: any) {
+  return res?.isError && SILENT_IDENTITY_ERROR_CODES.has(res?.errCode);
+}
+
 export async function getTableColumnList(
   tableName: string,
   databaseName?: string,
@@ -146,12 +158,36 @@ export async function queryIdentities(
     {
       params: {
         type: types?.join(','),
-        identityNameLike
+        identityNameLike,
+        ignoreError: true
       }
     }
   );
 
-  return res?.data?.contents;
+  if (isSilentIdentityError(res)) {
+    return [];
+  }
+
+  if (res?.isError) {
+    notification.error({
+      track:
+        res?.errMsg ||
+        formatMessage({
+          id: 'odc.network.table.QueryIdentitiesFailed',
+          defaultMessage: '获取数据库对象联想失败'
+        }),
+      requestId: res?.requestId
+    });
+    return;
+  }
+
+  if (Array.isArray(res?.data?.contents)) {
+    return res.data.contents;
+  }
+  if (Array.isArray(res?.data)) {
+    return res.data;
+  }
+  return [];
 }
 
 export async function generateCreateTableDDL(
