@@ -60,6 +60,8 @@ import { ReactComponent as DMSvg } from '@/svgr/dm.svg';
 import { ReactComponent as DBDMSvg } from '@/svgr/database_dm.svg';
 import { ReactComponent as MongoDBSvg } from '@/svgr/command.svg';
 import { ReactComponent as DBMongoDBSvg } from '@/svgr/database.svg';
+import { ReactComponent as RedisSvg } from '@/svgr/redis.svg';
+import { ReactComponent as DBRedisSvg } from '@/svgr/database_redis.svg';
 import { ReactComponent as DB2Svg } from '@/svgr/db2.svg';
 import { ReactComponent as DBDB2Svg } from '@/svgr/database_db2.svg';
 import odc from '@/plugins/odc';
@@ -217,11 +219,11 @@ const _styles = {
   },
   [IDataSourceType.Redis]: {
     icon: {
-      component: MongoDBSvg,
-      color: '#d82c20'
+      component: RedisSvg,
+      color: '#DC382D'
     },
     dbIcon: {
-      component: DBMongoDBSvg
+      component: DBRedisSvg
     }
   },
   // Hive reuses the generic database SVG assets to avoid shipping new
