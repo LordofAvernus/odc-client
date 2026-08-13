@@ -186,7 +186,9 @@ class DataTypes {
     // valid IDataTypes entry instead of returning undefined and rendering null.
     [ConnectionMode.GAUSSDB]: MySQLDataTypes,
     // KingBase (oracle mode) reuses Oracle data types for column extra / DDL UI.
-    [ConnectionMode.KINGBASE]: OracleDataTypes
+    [ConnectionMode.KINGBASE]: OracleDataTypes,
+    // GBase-8a is MySQL-wire; reuse MySQL data types for column extras.
+    [ConnectionMode.GBASE_8A]: MySQLDataTypes
   };
   public getParamsCount(mode: ConnectionMode, dataTypeName: string) {
     if (!dataTypeName) {

@@ -79,6 +79,7 @@ export const objectTypeConfig = {
   [ConnectType.OB_MYSQL]: mysqlObjectType,
   [ConnectType.MYSQL]: mysqlObjectType,
   [ConnectType.DORIS]: mysqlObjectType,
+  [ConnectType.GBASE_8A]: mysqlObjectType,
   [ConnectType.PG]: pgObjectType,
   // GaussDB / openGauss expose the same searchable objects as native PostgreSQL
   // (table / column / function / view / trigger). Without this entry the search

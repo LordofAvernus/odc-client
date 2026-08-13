@@ -26,6 +26,7 @@ import Doris from './doris';
 import TiDB from './tidb';
 import PG from './pg';
 import GaussDB from './gaussdb';
+import GBase8a from './gbase8a';
 import DM from './dm';
 import KingBase from './kingbase';
 import Hana from './hana';
@@ -65,6 +66,8 @@ import { ReactComponent as RedisSvg } from '@/svgr/redis.svg';
 import { ReactComponent as DBRedisSvg } from '@/svgr/database_redis.svg';
 import { ReactComponent as DB2Svg } from '@/svgr/db2.svg';
 import { ReactComponent as DBDB2Svg } from '@/svgr/database_db2.svg';
+import { ReactComponent as GBase8aSvg } from '@/svgr/gbase8a.svg';
+import { ReactComponent as DBGBase8aSvg } from '@/svgr/database_gbase8a.svg';
 import odc from '@/plugins/odc';
 import { getImg } from '@/util/intl';
 import React from 'react';
@@ -171,6 +174,16 @@ const _styles = {
     },
     dbIcon: {
       component: DBPGSvg
+    }
+  },
+  // GBase-8a: dedicated square mark from knowledge agent/assets/gbase.svg (AC-8).
+  [IDataSourceType.GBase8a]: {
+    icon: {
+      component: GBase8aSvg,
+      color: '#e60012'
+    },
+    dbIcon: {
+      component: DBGBase8aSvg
     }
   },
   [IDataSourceType.ALIYUNOSS]: {
@@ -284,6 +297,7 @@ const _gruops = {
   [IDataSourceType.Oracle]: DatasourceGroup.OtherDatabase,
   [IDataSourceType.PG]: DatasourceGroup.OtherDatabase,
   [IDataSourceType.GaussDB]: DatasourceGroup.OtherDatabase,
+  [IDataSourceType.GBase8a]: DatasourceGroup.OtherDatabase,
   [IDataSourceType.ALIYUNOSS]: DatasourceGroup.FileSystem,
   [IDataSourceType.AWSS3]: DatasourceGroup.FileSystem,
   [IDataSourceType.HUAWEI]: DatasourceGroup.FileSystem,
@@ -349,6 +363,7 @@ function initDatasource() {
   register(IDataSourceType.Oracle, oracle);
   register(IDataSourceType.PG, PG);
   register(IDataSourceType.GaussDB, GaussDB);
+  register(IDataSourceType.GBase8a, GBase8a);
   register(IDataSourceType.ALIYUNOSS, FileSystem.ALIYUN);
   register(IDataSourceType.AWSS3, FileSystem.AWSS3);
   register(IDataSourceType.HUAWEI, FileSystem.HUAWEI);
