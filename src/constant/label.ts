@@ -151,6 +151,7 @@ export const ConnectTypeText = (type: ConnectType) => {
       id: 'src.constant.DM_LABEL',
       defaultMessage: '达梦(DM)'
     }),
+    [ConnectType.KINGBASE]: 'KingBase',
     [ConnectType.HANA]: 'SAP HANA',
     [ConnectType.DB2]: 'DB2'
   };

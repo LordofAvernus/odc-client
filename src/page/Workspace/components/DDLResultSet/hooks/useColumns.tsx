@@ -16,6 +16,7 @@
 
 import { ConnectionMode, ResultSetColumn } from '@/d.ts';
 import { isNlsColumn, isObjectColumn } from '@/util/column';
+import { isConnectionModeBeOracleSqlFamily } from '@/util/connection';
 import { isNil, isString, isUndefined } from 'lodash';
 import React, { useMemo } from 'react';
 import {
@@ -180,9 +181,7 @@ export function getCellFormatter(
 }
 
 function getEditor(columnType: string, dbMode: ConnectionMode) {
-  const isOracle = [ConnectionMode.OB_ORACLE, ConnectionMode.ORACLE].includes(
-    dbMode
-  );
+  const isOracle = isConnectionModeBeOracleSqlFamily(dbMode);
   switch (columnType) {
     case 'TIME': {
       return TimeEditor;

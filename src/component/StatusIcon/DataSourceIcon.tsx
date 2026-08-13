@@ -40,12 +40,28 @@ export default function StatusIcon({ item }: { item: IConnection }) {
             defaultMessage: '状态同步中'
           })}
         >
-          <Loading3QuartersOutlined
-            spin
+          <span
             style={{
-              color: '#1890FF'
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 2,
+              verticalAlign: 'middle'
             }}
-          />
+          >
+            {icon?.component ? (
+              <Icon
+                component={icon.component}
+                style={{ fontSize: 16, color: icon?.color }}
+              />
+            ) : null}
+            <Loading3QuartersOutlined
+              spin
+              style={{
+                color: '#1890FF',
+                fontSize: 12
+              }}
+            />
+          </span>
         </Tooltip>
       );
     }

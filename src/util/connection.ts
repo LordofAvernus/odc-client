@@ -89,3 +89,17 @@ export function encryptConnection<T>(connection: T) {
 export function isConnectionModeBeMySQLType(dbMode: ConnectionMode) {
   return [ConnectionMode.MYSQL, ConnectionMode.OB_MYSQL].includes(dbMode);
 }
+
+/**
+ * Oracle SQL family (S3 §5): quote / paste / delimiter-adjacent FE helpers.
+ * Aligns with backend DialectType.isOracleSqlFamily — Oracle / OB Oracle / DM / KingBase.
+ * Do not collapse KINGBASE into ORACLE enum values.
+ */
+export function isConnectionModeBeOracleSqlFamily(dbMode: ConnectionMode) {
+  return [
+    ConnectionMode.OB_ORACLE,
+    ConnectionMode.ORACLE,
+    ConnectionMode.DM,
+    ConnectionMode.KINGBASE
+  ].includes(dbMode);
+}

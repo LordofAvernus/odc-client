@@ -1559,14 +1559,14 @@ export class SQLPage extends Component<IProps, ISQLPageState> {
       if (result.status !== ISqlExecuteResultStatus.SUCCESS) {
         const sqlIndexs = await splitSqlForHighlight(
           this.editor.getValue(),
-          session.connection?.dialectType === ConnectionMode.MYSQL,
+          isConnectionModeBeMySQLType(session.connection?.dialectType),
           session?.params?.delimiter
         );
         const endOffset = sqlIndexs[i];
         const result = await getCurrentSQL(
           this.editor.getValue(),
           endOffset,
-          session.connection?.dialectType === ConnectionMode.MYSQL,
+          isConnectionModeBeMySQLType(session.connection?.dialectType),
           session?.params?.delimiter
         );
 

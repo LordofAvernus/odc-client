@@ -184,7 +184,9 @@ class DataTypes {
     // GaussDB / openGauss approximate to MySQL standard SQL data types so the
     // column extra panel (default value, character set, etc.) can resolve a
     // valid IDataTypes entry instead of returning undefined and rendering null.
-    [ConnectionMode.GAUSSDB]: MySQLDataTypes
+    [ConnectionMode.GAUSSDB]: MySQLDataTypes,
+    // KingBase (oracle mode) reuses Oracle data types for column extra / DDL UI.
+    [ConnectionMode.KINGBASE]: OracleDataTypes
   };
   public getParamsCount(mode: ConnectionMode, dataTypeName: string) {
     if (!dataTypeName) {

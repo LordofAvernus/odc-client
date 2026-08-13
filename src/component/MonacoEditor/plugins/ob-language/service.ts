@@ -16,9 +16,10 @@
 
 import { getTableColumnList, getTableInfo } from '@/common/network/table';
 import { getView } from '@/common/network/view';
-import { ConnectionMode, ITableColumn } from '@/d.ts';
+import { ITableColumn } from '@/d.ts';
 import { TableColumn } from '@/page/Workspace/components/CreateTable/interface';
 import SessionStore from '@/store/sessionManager/session';
+import { isConnectionModeBeOracleSqlFamily } from '@/util/connection';
 import { getRealNameInDatabase } from '@/util/sql';
 import type { IModelOptions } from '@oceanbase-odc/monaco-plugin-ob/dist/type';
 
@@ -81,13 +82,13 @@ export function getModelService(
     async getTableColumns(tableName: string, dbName?: string) {
       const realTableName = getRealNameInDatabase(
         tableName,
-        [ConnectionMode.OB_ORACLE, ConnectionMode.ORACLE].includes(
+        isConnectionModeBeOracleSqlFamily(
           sessionFunc()?.connection?.dialectType
         )
       );
       dbName = getRealNameInDatabase(
         dbName,
-        [ConnectionMode.OB_ORACLE, ConnectionMode.ORACLE].includes(
+        isConnectionModeBeOracleSqlFamily(
           sessionFunc()?.connection?.dialectType
         )
       );
@@ -181,13 +182,13 @@ export function getModelService(
     async getTableDDL(tableName: string, dbName?: string) {
       const realTableName = getRealNameInDatabase(
         tableName,
-        [ConnectionMode.OB_ORACLE, ConnectionMode.ORACLE].includes(
+        isConnectionModeBeOracleSqlFamily(
           sessionFunc()?.connection?.dialectType
         )
       );
       dbName = getRealNameInDatabase(
         dbName,
-        [ConnectionMode.OB_ORACLE, ConnectionMode.ORACLE].includes(
+        isConnectionModeBeOracleSqlFamily(
           sessionFunc()?.connection?.dialectType
         )
       );

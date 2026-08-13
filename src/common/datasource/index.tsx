@@ -27,6 +27,7 @@ import TiDB from './tidb';
 import PG from './pg';
 import GaussDB from './gaussdb';
 import DM from './dm';
+import KingBase from './kingbase';
 import Hana from './hana';
 import MongoDB from './mongodb';
 import Redis from './redis';
@@ -65,6 +66,24 @@ import { ReactComponent as DBRedisSvg } from '@/svgr/database_redis.svg';
 import { ReactComponent as DB2Svg } from '@/svgr/db2.svg';
 import { ReactComponent as DBDB2Svg } from '@/svgr/database_db2.svg';
 import odc from '@/plugins/odc';
+import { getImg } from '@/util/intl';
+import React from 'react';
+
+/** Dedicated KingBase icon — public/img/kingbase.png (S2 §5; AC-8). */
+const KingBaseIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <img
+    src={getImg('kingbase.png')}
+    alt="KingBase"
+    width="1em"
+    height="1em"
+    style={{
+      width: '1em',
+      height: '1em',
+      verticalAlign: 'middle',
+      ...(props.style as React.CSSProperties)
+    }}
+  />
+);
 
 export const _types: Map<
   IDataSourceType,
@@ -199,6 +218,15 @@ const _styles = {
       component: DBDMSvg
     }
   },
+  [IDataSourceType.KingBase]: {
+    icon: {
+      component: KingBaseIcon,
+      color: '#c8151d'
+    },
+    dbIcon: {
+      component: KingBaseIcon
+    }
+  },
   [IDataSourceType.HANA]: {
     icon: {
       component: SqlServerSvg,
@@ -262,6 +290,7 @@ const _gruops = {
   [IDataSourceType.QCLOUD]: DatasourceGroup.FileSystem,
   [IDataSourceType.SQL_SERVER]: DatasourceGroup.OtherDatabase,
   [IDataSourceType.DM]: DatasourceGroup.OtherDatabase,
+  [IDataSourceType.KingBase]: DatasourceGroup.OtherDatabase,
   [IDataSourceType.HANA]: DatasourceGroup.OtherDatabase,
   [IDataSourceType.MongoDB]: DatasourceGroup.OtherDatabase,
   [IDataSourceType.Redis]: DatasourceGroup.OtherDatabase,
@@ -326,6 +355,7 @@ function initDatasource() {
   register(IDataSourceType.QCLOUD, FileSystem.QCLOUD);
   register(IDataSourceType.SQL_SERVER, SqlServer);
   register(IDataSourceType.DM, DM);
+  register(IDataSourceType.KingBase, KingBase);
   register(IDataSourceType.HANA, Hana);
   register(IDataSourceType.MongoDB, MongoDB);
   register(IDataSourceType.Redis, Redis);
