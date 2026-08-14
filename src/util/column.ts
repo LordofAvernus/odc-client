@@ -15,6 +15,7 @@
  */
 
 import { ConnectionMode, IColumn, IColumnSizeMap } from '@/d.ts';
+import { isConnectionModeBeOracleSqlFamily } from '@/util/connection';
 import BigNumber from 'bignumber.js';
 import { isNil } from 'lodash';
 import { convertColumnType } from './utils';
@@ -235,7 +236,7 @@ export function isObjectColumn(columnType: string) {
 }
 
 export function isNlsColumn(columnType: string, dbMode: ConnectionMode) {
-  if (dbMode !== ConnectionMode.OB_ORACLE && dbMode !== ConnectionMode.ORACLE) {
+  if (!isConnectionModeBeOracleSqlFamily(dbMode)) {
     return false;
   }
   columnType = convertColumnType(columnType);

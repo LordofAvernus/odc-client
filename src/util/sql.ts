@@ -24,6 +24,7 @@ import {
   IFormatPLSchema,
   IPLParam
 } from '@/d.ts';
+import { isConnectionModeBeOracleSqlFamily } from '@/util/connection';
 import dayjs from 'dayjs';
 import { Oracle } from './dataType';
 import { getQuoteTableName } from './utils';
@@ -324,11 +325,9 @@ export function textExpaste(text: string, dialectType?: ConnectionMode) {
    * "f")
    */
   dialectType = dialectType || ConnectionMode.OB_ORACLE;
+  const quote = isConnectionModeBeOracleSqlFamily(dialectType) ? "'" : '"';
   return (text || '')
-    .replace(
-      /(\S+)[ \t]?/g,
-      dialectType === ConnectionMode.OB_ORACLE ? "'$1'," : '"$1",'
-    )
+    .replace(/(\S+)[ \t]?/g, `${quote}$1${quote},`)
     .replace(/,(\s*)$/, ')$1')
     .replace(/^(\s*)/, '$1(');
 }

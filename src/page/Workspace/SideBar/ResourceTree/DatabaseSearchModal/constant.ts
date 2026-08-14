@@ -87,6 +87,7 @@ export const objectTypeConfig = {
   [ConnectType.GAUSSDB]: pgObjectType,
   [ConnectType.OB_ORACLE]: oracleObjectType,
   [ConnectType.ORACLE]: oracleObjectType,
+  [ConnectType.KINGBASE]: oracleObjectType,
   [ConnectType.SQL_SERVER]: sqlServerObjectType,
   [ConnectType.HANA]: hanaObjectType,
   [ConnectType.HIVE]: [DbObjectType.table, DbObjectType.column],
