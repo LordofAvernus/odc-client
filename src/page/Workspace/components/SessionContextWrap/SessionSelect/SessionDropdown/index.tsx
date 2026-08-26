@@ -9,7 +9,7 @@ import { formatMessage } from '@/util/intl';
 import tracert from '@/util/tracert';
 import { useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Popover, Spin, Typography } from 'antd';
+import { Popover, Spin, Tooltip, Typography } from 'antd';
 import { DataNode } from 'antd/lib/tree';
 import { toInteger } from 'lodash';
 import { UserStore } from '@/store/login';
@@ -27,8 +27,9 @@ import React, {
   useState
 } from 'react';
 import SessionContext from '../../context';
-import { DEFALT_HEIGHT, DEFALT_WIDTH } from '../const';
+import { DEFALT_HEIGHT } from '../const';
 import {
+  PanelRootStyleWrapper,
   HeaderStyleWrapper,
   GroupIconStyleWrapper,
   FooterStyleWrapper,
@@ -60,6 +61,7 @@ import {
 import DatasourceSelectEmpty from '@/component/Empty/DatasourceSelectEmpty';
 import DatabaseSelectEmpty from '@/component/Empty/DatabaseSelectEmpty';
 import renderDatabaseNode from './renderDatabaseNode';
+import { calcAdaptivePanelWidthFromTitles } from './calcAdaptivePanelWidth';
 export interface IDatabasesTitleProps {
   db: IDatabase;
   taskType: TaskType;
@@ -143,6 +145,9 @@ const SessionDropdown: React.FC<IProps> = (props) => {
   });
   const [searchValueByDataSource, setSearchValueByDataSource] = useState('');
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
+  const [viewportWidth, setViewportWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1920
+  );
   const hasDialectTypesFilter =
     filters?.dialectTypes &&
     Array.isArray(filters?.dialectTypes) &&
@@ -234,6 +239,12 @@ const SessionDropdown: React.FC<IProps> = (props) => {
       return true;
     }
   });
+
+  useEffect(() => {
+    const onResize = () => setViewportWidth(window.innerWidth);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -501,7 +512,11 @@ const SessionDropdown: React.FC<IProps> = (props) => {
                       groupMode
                     );
                     return {
-                      title: sItem.groupName,
+                      title: (
+                        <Tooltip title={sItem.groupName}>
+                          <span>{sItem.groupName}</span>
+                        </Tooltip>
+                      ),
                       key: sencondGroupKey,
                       icon: getIcon({
                         type: NodeType.SecondGroupNodeDataSource,
@@ -536,6 +551,100 @@ const SessionDropdown: React.FC<IProps> = (props) => {
     setCanCheckedDbKeys(_canCheckedDbKeys);
     return _treeData;
   }, [groupMode, data, searchValueByDataSource, tab]);
+
+  /**
+   * 与自适应分支同源：仅顶部未传宽走测宽；显式传宽（工单/导出/多库）保持固定宽。
+   * Group 入口须同条件，避免复用场景重新露出分组切换图标（复审 §5.1）。
+   */
+  const isExplicitWidth =
+    width !== undefined && width !== null && width !== '';
+  const resolvedWidth = useMemo(() => {
+    if (isExplicitWidth) {
+      return width;
+    }
+    const titles: string[] = [];
+    const pushTitle = (value?: string) => {
+      if (value) {
+        titles.push(value);
+      }
+    };
+    if (context.datasourceMode) {
+      [...(DatabaseGroupMap[DatabaseGroup.dataSource]?.values() || [])].forEach(
+        (item) => {
+          const name = item?.dataSource?.name;
+          if (
+            searchValueByDataSource &&
+            !name
+              ?.toLowerCase()
+              .includes(searchValueByDataSource?.toLowerCase())
+          ) {
+            return;
+          }
+          pushTitle(name);
+        }
+      );
+    } else if (tab === TabsType.recentlyUsed) {
+      databasesHistory?.forEach((database) => {
+        pushTitle(database?.name);
+      });
+    } else {
+      switch (groupMode) {
+        case DatabaseGroup.none: {
+          [...(DatabaseGroupMap[groupMode]?.values() || [])].forEach(
+            (database: IDatabase) => {
+              pushTitle(database?.name);
+            }
+          );
+          break;
+        }
+        case DatabaseGroup.project:
+        case DatabaseGroup.dataSource:
+        case DatabaseGroup.tenant: {
+          [...(DatabaseGroupMap[groupMode]?.values() || [])].forEach(
+            (groupItem) => {
+              const tip = groupItem?.tip;
+              pushTitle(
+                tip ? `${groupItem?.groupName || ''}${tip}` : groupItem?.groupName
+              );
+              groupItem?.databases?.forEach((database) => {
+                pushTitle(database?.name);
+              });
+            }
+          );
+          break;
+        }
+        case DatabaseGroup.cluster:
+        case DatabaseGroup.environment:
+        case DatabaseGroup.connectType: {
+          [...(DatabaseGroupMap[groupMode]?.values() || [])].forEach(
+            (groupItem) => {
+              pushTitle(groupItem?.groupName);
+              [...(groupItem?.secondGroup?.values() || [])].forEach((sItem) => {
+                pushTitle(sItem?.groupName);
+                sItem?.databases?.forEach((database) => {
+                  pushTitle(database?.name);
+                });
+              });
+            }
+          );
+          break;
+        }
+        default:
+          break;
+      }
+    }
+    return calcAdaptivePanelWidthFromTitles(titles, viewportWidth);
+  }, [
+    width,
+    context.datasourceMode,
+    groupMode,
+    data,
+    searchValueByDataSource,
+    tab,
+    databasesHistory,
+    DatabaseGroupMap,
+    viewportWidth
+  ]);
 
   function TreeRender() {
     return (
@@ -643,8 +752,8 @@ const SessionDropdown: React.FC<IProps> = (props) => {
       content={
         disabled ? null : (
           <Spin spinning={loading || fetchLoading || databaseHistoryLoading}>
-            <>
-              <HeaderStyleWrapper $width={width || DEFALT_WIDTH}>
+            <PanelRootStyleWrapper $width={resolvedWidth}>
+              <HeaderStyleWrapper $width={resolvedWidth}>
                 {!context.datasourceMode &&
                   !checkModeConfig &&
                   !userStore.isPrivateSpace() && (
@@ -660,21 +769,22 @@ const SessionDropdown: React.FC<IProps> = (props) => {
                     }}
                   />
                 )}
-                {/* {!context.datasourceMode && tab === TabsType.all && (
+                {!context.datasourceMode &&
+                  tab === TabsType.all &&
+                  !isExplicitWidth && (
                   <GroupIconStyleWrapper>
                     <Group setGroupMode={setGroupMode} groupMode={groupMode} />
                   </GroupIconStyleWrapper>
-                )} */}
+                )}
               </HeaderStyleWrapper>
               <TreeContainerStyleWrapper
                 $height={DEFALT_HEIGHT}
-                $width={width || DEFALT_WIDTH}
+                $width={resolvedWidth}
               >
                 {treeData?.length > 0 ? TreeRender() : empty}
               </TreeContainerStyleWrapper>
-            </>
-
-            {footerRender()}
+              {footerRender()}
+            </PanelRootStyleWrapper>
           </Spin>
         )
       }

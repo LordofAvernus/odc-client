@@ -17,12 +17,21 @@
 import { styled } from '@mui/material';
 import { Tree } from 'antd';
 
+/** 锁定面板外宽，避免虚拟树滚动/滚动条显隐撑开 Popover */
+export const PanelRootStyleWrapper = styled('div')<{ $width: number | string }>`
+  box-sizing: border-box;
+  width: ${({ $width }) =>
+    typeof $width === 'string' ? $width : `${$width}px`};
+  max-width: 100vw;
+  overflow: hidden;
+`;
+
 export const HeaderStyleWrapper = styled('div')<{ $width: number | string }>`
   display: flex;
   align-items: start;
+  box-sizing: border-box;
   padding: 12px;
-  width: ${({ $width }) =>
-    typeof $width === 'string' ? $width : `${$width}px`};
+  width: 100%;
 
   .database-select-tab {
     margin-right: 12px;
@@ -42,12 +51,18 @@ export const TreeContainerStyleWrapper = styled('div')<{
   $height: string | number;
   $width: string | number;
 }>`
-  overflow: hidden;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: hidden;
   padding: 0px 4px 12px 0;
   height: ${({ $height }) =>
     typeof $height === 'string' ? $height : `${$height}px`};
-  width: ${({ $width }) =>
-    typeof $width === 'string' ? $width : `${$width}px`};
+  width: 100%;
+
+  /* 预留滚动条槽，上下滚动不挤占内容宽导致面板跳变 */
+  .ant-tree-list-holder {
+    scrollbar-gutter: stable;
+  }
 `;
 
 export const TreeStyleWrapper = styled(Tree)`
@@ -75,13 +90,25 @@ export const TreeStyleWrapper = styled(Tree)`
 
   .groupItem {
     width: 100%;
+    min-width: 0;
     display: flex;
+    overflow: hidden;
+
+    .groupName {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
 
     .tip {
       color: ${({ theme }) => theme.sharedTheme.uiToken.colorTextTertiary};
       padding-left: 5px;
+      min-width: 0;
+      flex-shrink: 1;
       text-overflow: ellipsis;
       overflow: hidden;
+      white-space: nowrap;
     }
   }
 
