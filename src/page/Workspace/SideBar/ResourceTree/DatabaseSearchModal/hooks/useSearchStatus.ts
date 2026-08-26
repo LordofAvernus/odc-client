@@ -102,15 +102,10 @@ const useSearchStatus = (initSearchStatus: SearchStatus) => {
       case SearchStatus.databaseforObject: {
         if (searchKey) {
           setSearchKey('');
-        } else if (
-          !cacheSearchKeyList.length ||
-          cacheSearchKeyList.length === 1
-        ) {
-          update(SearchStatus.defalut);
-          setDatabase(null);
         } else {
-          const _cacheSearchKeyList = cacheSearchKeyList;
-          setSearchKey(_cacheSearchKeyList.pop());
+          // 退回顶层 forDatabase，不再落到废弃确认页 defalut
+          const _cacheSearchKeyList = [...cacheSearchKeyList];
+          setSearchKey(_cacheSearchKeyList.pop() || '');
           setDatabase(null);
           setCacheSearchKeyList(_cacheSearchKeyList);
           update(SearchStatus.forDatabase);
@@ -144,14 +139,17 @@ const useSearchStatus = (initSearchStatus: SearchStatus) => {
       case SearchStatus.forDatabase:
       case SearchStatus.forDataSource:
       case SearchStatus.forProject: {
+        // 顶层：仅清关键词，保持当前类型；不得落到废弃确认页 defalut
+        if (!cacheSearchKeyList.length) {
+          setSearchKey('');
+          break;
+        }
+        const _cacheSearchKeyList = [...cacheSearchKeyList];
+        setSearchKey(_cacheSearchKeyList.pop() || '');
+        setCacheSearchKeyList(_cacheSearchKeyList);
         setDatabase(null);
         setProject(null);
         setDataSource(null);
-        update(SearchStatus.defalut);
-        const _cacheSearchKeyList = cacheSearchKeyList;
-        if (_cacheSearchKeyList.length) {
-          setSearchKey(_cacheSearchKeyList.pop());
-        }
         break;
       }
       case SearchStatus.defalut: {
