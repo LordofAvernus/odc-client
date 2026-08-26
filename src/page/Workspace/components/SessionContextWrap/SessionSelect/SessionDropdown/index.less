@@ -33,6 +33,12 @@
 .treeContainer {
   overflow: hidden;
   padding: 0px 4px 12px 12px;
+  box-sizing: border-box;
+  :global {
+    .ant-tree-list-holder {
+      scrollbar-gutter: stable;
+    }
+  }
   .tree {
     .databaseItem {
       display: flex;
@@ -56,12 +62,23 @@
 
     .groupItem {
       width: 100%;
+      min-width: 0;
       display: flex;
+      overflow: hidden;
+      .groupName {
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
       .tip {
         color: var(--text-color-hint);
         padding-left: 5px;
+        min-width: 0;
+        flex-shrink: 1;
         text-overflow: ellipsis;
         overflow: hidden;
+        white-space: nowrap;
       }
     }
 

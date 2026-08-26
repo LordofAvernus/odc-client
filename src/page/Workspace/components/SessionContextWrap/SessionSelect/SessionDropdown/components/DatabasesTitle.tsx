@@ -6,15 +6,34 @@ import styles from '../index.less';
 import { EnvColorMap } from '@/constant';
 import ConnectionPopover from '@/component/ConnectionPopover';
 
-export const GroupNodeTitle = (props) => {
+/** 分组完整展示名：groupName + tip（与测宽拼接规则一致） */
+function getGroupFullName(item?: {
+  groupName?: string;
+  tip?: string;
+}): string {
+  if (!item) {
+    return '';
+  }
+  const { groupName, tip } = item;
+  if (tip) {
+    return `${groupName || ''}${tip}`;
+  }
+  return groupName || '';
+}
+
+export const GroupNodeTitle = (props: {
+  item?: { groupName?: string; tip?: string };
+  tip?: string;
+}) => {
   const { item } = props;
+  const fullName = getGroupFullName(item);
   return (
-    <div className={styles.groupItem}>
-      <span>{item?.groupName}</span>
-      <Tooltip title={item?.tip}>
-        <span className={styles.tip}>{item?.tip}</span>
-      </Tooltip>
-    </div>
+    <Tooltip title={fullName || undefined}>
+      <div className={styles.groupItem}>
+        <span className={styles.groupName}>{item?.groupName}</span>
+        {item?.tip ? <span className={styles.tip}>{item?.tip}</span> : null}
+      </div>
+    </Tooltip>
   );
 };
 
