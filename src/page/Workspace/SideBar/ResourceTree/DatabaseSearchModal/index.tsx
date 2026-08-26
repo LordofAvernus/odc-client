@@ -43,7 +43,7 @@ const DatabaseSearchModal = ({ modalStore, userStore }: IProps) => {
     update,
     setDataSource,
     setProject
-  } = useSearchStatus(SearchStatus.defalut);
+  } = useSearchStatus(SearchStatus.forDataSource);
   const [activeKey, setActiveKey] = useState(SEARCH_OBJECT_FROM_ALL_DATABASE);
   const {
     initStatus,
