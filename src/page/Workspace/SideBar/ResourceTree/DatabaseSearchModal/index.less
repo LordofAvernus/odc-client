@@ -52,12 +52,28 @@
     line-height: 20px;
     padding: 4px 12px;
   }
+  .typeSegmented {
+    padding: 8px 12px 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    :global {
+      .ant-segmented {
+        max-width: 100%;
+      }
+      .ant-segmented-item-label {
+        color: var(--text-color-primary);
+      }
+    }
+  }
   .title {
-    color: rgba(0, 0, 0, 0.65);
+    color: var(--text-color-primary);
     font-weight: 400;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 100%;
+    overflow: hidden;
     .selectInfo {
       flex-grow: 1;
       display: flex;

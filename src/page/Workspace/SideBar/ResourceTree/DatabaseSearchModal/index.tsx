@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect, useMemo } from 'react';
-import { Modal, Spin } from 'antd';
+import { Modal, Segmented, Spin } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { ModalStore } from '@/store/modal';
 import Search from './components/Search';
@@ -22,6 +22,11 @@ import { openNewSQLPage } from '@/store/helper/page';
 import { formatMessage } from '@/util/intl';
 import GlobalSearchContext from '@/page/Workspace/context/GlobalSearchContext';
 import ResourceTreeContext from '@/page/Workspace/context/ResourceTreeContext';
+
+const TOP_LEVEL_SEARCH_STATUSES = [
+  SearchStatus.forDataSource,
+  SearchStatus.forDatabase
+];
 
 interface IProps {
   modalStore?: ModalStore;
@@ -286,6 +291,21 @@ const DatabaseSearchModal = ({ modalStore, userStore }: IProps) => {
         destroyOnClose={true}
         footer={null}
       >
+        {TOP_LEVEL_SEARCH_STATUSES.includes(status) && (
+          <div className={styles.typeSegmented}>
+            <Segmented
+              size="small"
+              value={status}
+              options={TOP_LEVEL_SEARCH_STATUSES.map((type) => ({
+                label: SearchOptionTypeTextMap[type],
+                value: type
+              }))}
+              onChange={(value) => {
+                update(value as SearchStatus);
+              }}
+            />
+          </div>
+        )}
         <Spin spinning={objectloading || databaseLoading}>
           {contentRender()}
         </Spin>
