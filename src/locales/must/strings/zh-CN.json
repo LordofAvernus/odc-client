@@ -5585,6 +5585,8 @@
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.7F586D70": "支持搜索项目、数据源、数据库，也可继续搜索表、列、视图等",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.DB1BDB57": "搜索表、列、视图等",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.0260FE41": "搜索数据库、表、列、视图等",
+  "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.95C79C4B": "搜索数据源",
+  "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.22EF51F6": "搜索数据库",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.32E0FB21": "暂无数据",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.0A19E90A": "请尝试",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.6BFBD33C": "同步发起成功",

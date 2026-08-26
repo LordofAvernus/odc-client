@@ -5582,6 +5582,8 @@
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.7F586D70": "Search projects, data sources, databases, or continue to search tables, columns, and views",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.DB1BDB57": "Search Tables, Columns, Views, etc.",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.0260FE41": "Search Databases, Tables, Columns, Views, etc.",
+  "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.95C79C4B": "Search data source",
+  "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.22EF51F6": "Search database",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.32E0FB21": "No data",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.0A19E90A": "Please try ",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.6BFBD33C": "Synchronization initiated successfully",

@@ -5582,6 +5582,8 @@
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.7F586D70": "支持搜尋專案、資料來源、資料庫，也可繼續搜尋表、欄位、視圖等",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.DB1BDB57": "搜尋表、列、視圖等",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.0260FE41": "搜尋資料庫、表格、欄位、檢視等",
+  "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.95C79C4B": "搜尋資料源",
+  "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.22EF51F6": "搜尋資料庫",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.32E0FB21": "暫無數據",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.0A19E90A": "請嘗試",
   "src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.6BFBD33C": "同步發起成功",

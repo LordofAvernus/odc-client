@@ -159,6 +159,20 @@ const Search = ({ userStore, modalStore }: Iprops) => {
         }
         break;
       }
+      case SearchStatus.forDataSource: {
+        text = formatMessage({
+          id: 'src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.95C79C4B',
+          defaultMessage: '搜索数据源'
+        });
+        break;
+      }
+      case SearchStatus.forDatabase: {
+        text = formatMessage({
+          id: 'src.page.Workspace.SideBar.ResourceTree.DatabaseSearchModal.components.22EF51F6',
+          defaultMessage: '搜索数据库'
+        });
+        break;
+      }
       default: {
         if (database) {
           text = formatMessage({
@@ -175,7 +189,7 @@ const Search = ({ userStore, modalStore }: Iprops) => {
       }
     }
     return text;
-  }, [status, database]);
+  }, [status, database, userStore]);
 
   const getObjectInput = () => {
     return (
@@ -196,7 +210,14 @@ const Search = ({ userStore, modalStore }: Iprops) => {
     if (objectloading) {
       return <LoadingOutlined {...props} />;
     }
-    if (status === SearchStatus.defalut && !searchKey) return undefined;
+    if (
+      (status === SearchStatus.defalut ||
+        status === SearchStatus.forDataSource ||
+        status === SearchStatus.forDatabase) &&
+      !searchKey
+    ) {
+      return undefined;
+    }
     return (
       <CloseCircleFilled
         {...props}
